@@ -25,8 +25,14 @@ before((done)=>{
 // add a hook to clean before test.
 //need to tell Mocha to have a little pause
 beforeEach((done)=>{
-  mongoose.connection.collections.users.drop(()=>{
-    //Ready to run tests
-    done();
+  const {users,comments,blogposts} = mongoose.connection.collections;
+
+  //drop collections sequentially because MongoDB cannot drop multiple collections at the same time 
+  users.drop(()=>{
+      comments.drop(()=>{
+          blogposts.drop(()=>{
+            done();
+          });
+      });
   });
 });

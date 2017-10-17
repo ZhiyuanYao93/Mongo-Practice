@@ -5,7 +5,7 @@ describe('Update records',()=>{
   let joe;
 
   beforeEach((done)=>{
-    joe = new User({name:'Joe'});
+    joe = new User({name:'Joe',likes:0});
     joe.save()
       .then(()=>done());
   });
@@ -42,5 +42,14 @@ describe('Update records',()=>{
 
   it('Class find by Id and update',(done)=>{
       assertName(User.findByIdAndUpdate(joe._id,{name:'Mike'}),done);
+  });
+
+  it('A user can have its postcount incremented by 1',(done)=>{
+      User.update({name:'Joe'},{$inc:{likes:1}})
+      .then(()=>User.findOne({name:'Joe'}))
+      .then((user)=>{
+        assert(user.likes === 1);
+        done();
+      });
   });
 });
